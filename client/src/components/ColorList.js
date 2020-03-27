@@ -10,6 +10,35 @@ const ColorList = ({ colors, setModify, modify }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [newColor, setNewColor] = useState({
+    color: "",
+    code: { hex: "" }
+  });
+
+  const handleNewColor = e => {
+    e.target.name === "hex" ? setNewColor({
+      ...newColor, 
+      code: {...newColor.code, [e.target.name]: e.target.value }}) :
+    setNewColor({
+      ...newColor,
+      [e.target.name]: e.target.value
+    });
+    console.log("NEW Color", newColor);
+  };
+
+  const submitNewColor = e => {
+    e.preventDefault();
+    axiosWithAuth().post("/api/colors", newColor)
+    .then(res => {
+      console.log(res.data);
+      setModify(!modify);
+      setNewColor({
+        color: "",
+        code: { hex: "" }
+      })
+    })
+    .catch(err => console.log(err));
+  };
 
   const editColor = color => {
     setEditing(true);
@@ -38,6 +67,13 @@ const ColorList = ({ colors, setModify, modify }) => {
 
   return (
     <div className="colors-wrap">
+
+      <form onSubmit = {submitNewColor}>
+        <input onChange = {handleNewColor} name = "color" value = {newColor.color} type = "text" placeholder = "Color name"/>
+        <input onChange = {handleNewColor} name = "hex" type = "text" value = {newColor.code.hex} placeholder = "Hex code"/>
+        <button type = "submit">Add</button>
+      </form>
+
       <p>colors</p>
       <ul>
         {colors.map(color => (
