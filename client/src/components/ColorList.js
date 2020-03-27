@@ -69,9 +69,14 @@ const ColorList = ({ colors, setModify, modify }) => {
     <div className="colors-wrap">
 
       <form onSubmit = {submitNewColor}>
+      <legend>add color</legend>
+      <label>color name:
         <input onChange = {handleNewColor} name = "color" value = {newColor.color} type = "text" placeholder = "Color name"/>
+        </label>
+        <label>hex code:
         <input onChange = {handleNewColor} name = "hex" type = "text" value = {newColor.code.hex} placeholder = "Hex code"/>
-        <button type = "submit">Add</button>
+        </label>
+        <button className = "addbutton" type = "submit">Add</button>
       </form>
 
       <p>colors</p>
