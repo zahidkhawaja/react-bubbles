@@ -118,3 +118,22 @@ form {
     margin-right: 200px; 
   }
 }
+
+.login {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .loginform input {
+    width: 250px;
+    height: 30px;
+    font-size: 1.2rem;
+  }
+}
+
+.loginbutton {
+  height: 30px;
+  background-color: black;
+  color: white;
+  width: 25%;
+}

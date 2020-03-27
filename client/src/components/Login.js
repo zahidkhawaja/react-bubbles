@@ -38,9 +38,11 @@ const Login = () => {
   };
 
   return (
+    <div className = "login">
       <div className = "loginform">
       <h1>Welcome to the Bubble App!</h1>
         <form onSubmit = {handleSubmit}>
+          <div className = "fields">
         <input
             type="text"
             name="username"
@@ -56,9 +58,13 @@ const Login = () => {
             onChange={handleChanges}
             placeholder = "Password"
           />
+          </div>
           <br/>
-          <button>Log in</button>
+          <div className = "loginbuttoncontainer">
+          <button className = "loginbutton">Log in</button>
+          </div>
         </form>
+      </div>
       </div>
   );
 };
