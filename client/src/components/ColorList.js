@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
+import { useHistory } from "react-router-dom";
 
 const initialColor = {
   color: "",
@@ -8,6 +9,7 @@ const initialColor = {
 
 const ColorList = ({ colors, setModify, modify }) => {
   console.log(colors);
+  const history = useHistory();
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [newColor, setNewColor] = useState({
@@ -65,9 +67,16 @@ const ColorList = ({ colors, setModify, modify }) => {
     .catch(err => console.log(err));
   };
 
+  const logout = () => {
+    localStorage.clear();
+    history.push("/");
+  }
+
   return (
     <div className="colors-wrap">
-
+      <div className = "logout">
+      <button onClick = {() => logout()}>Log Out</button>
+      </div>
       <form onSubmit = {submitNewColor}>
       <legend>add color</legend>
       <label>color name:
