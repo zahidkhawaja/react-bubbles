@@ -1,34 +1,93 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
+import { useHistory } from "react-router-dom";
 
 const initialColor = {
   color: "",
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
+const ColorList = ({ colors, setModify, modify }) => {
   console.log(colors);
+  const history = useHistory();
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [newColor, setNewColor] = useState({
+    color: "",
+    code: { hex: "" }
+  });
+
+  const handleNewColor = e => {
+    e.target.name === "hex" ? setNewColor({
+      ...newColor, 
+      code: {...newColor.code, [e.target.name]: e.target.value }}) :
+    setNewColor({
+      ...newColor,
+      [e.target.name]: e.target.value
+    });
+    console.log("NEW Color", newColor);
+  };
+
+  const submitNewColor = e => {
+    e.preventDefault();
+    axiosWithAuth().post("/api/colors", newColor)
+    .then(res => {
+      console.log(res.data);
+      setModify(!modify);
+      setNewColor({
+        color: "",
+        code: { hex: "" }
+      })
+    })
+    .catch(err => console.log(err));
+  };
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
+    console.log("Color to edit", colorToEdit);
   };
 
   const saveEdit = e => {
     e.preventDefault();
-    // Make a put request to save your updated color
-    // think about where will you get the id from...
-    // where is is saved right now?
-  };
+    axiosWithAuth().put(`/api/colors/${colorToEdit.id}`, colorToEdit)
+    .then(res => {
+      console.log(res.data);
+      setModify(!modify);
+      setEditing(false);
+    })
+  }
 
   const deleteColor = color => {
-    // make a delete request to delete this color
+    axiosWithAuth().delete(`/api/colors/${color.id}`)
+    .then(res => {
+      console.log(res.data);
+      setModify(!modify);
+    })
+    .catch(err => console.log(err));
   };
+
+  const logout = () => {
+    localStorage.clear();
+    history.push("/");
+  }
 
   return (
     <div className="colors-wrap">
+      <div className = "logout">
+      <button onClick = {() => logout()}>Log Out</button>
+      </div>
+      <form onSubmit = {submitNewColor}>
+      <legend>add color</legend>
+      <label>color name:
+        <input onChange = {handleNewColor} name = "color" value = {newColor.color} type = "text" placeholder = "Color name"/>
+        </label>
+        <label>hex code:
+        <input onChange = {handleNewColor} name = "hex" type = "text" value = {newColor.code.hex} placeholder = "Hex code"/>
+        </label>
+        <button className = "addbutton" type = "submit">Add</button>
+      </form>
+
       <p>colors</p>
       <ul>
         {colors.map(color => (
